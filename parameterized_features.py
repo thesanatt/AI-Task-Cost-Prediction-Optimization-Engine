@@ -17,7 +17,7 @@ def extract_features(description: str) -> dict:
         "insurance": {"legal_devs": 1},
         "hospital": {"legal_devs": 1, "ai_specialists": 1},
         "data": {"ai_agents": 1, "ai_specialists": 1},
-        "analytics": {"ai_agents": 1},  # lowered from 2 to 1
+        "analytics": {"ai_agents": 1},
         "review": {"legal_devs": 1},
         "model": {"ai_specialists": 2},
         "fraud": {"ai_specialists": 1, "legal_devs": 1},
@@ -38,7 +38,11 @@ def extract_features(description: str) -> dict:
             for role, w in weights.items():
                 score[role] += w
 
-    # Default: ensure at least 1 developer if any resource is involved
+    # Set a max cap per role (avoid over-inflation)
+    for role in score:
+        score[role] = min(score[role], 2)
+
+    # Ensure at least 1 dev if any other resource is present
     if sum(score.values()) > 0 and score["devs"] == 0:
         score["devs"] = 1
 
