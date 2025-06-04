@@ -3,33 +3,32 @@ import numpy as np
 from parameterized_features import extract_features
 from cost_config import ROLE_COSTS, estimate_cost
 
-# Load trained model (no R² score needed anymore)
 model = joblib.load("resource_predictor.pkl")
 
 def predict_resources(description: str):
-    # Extract features from the input description
+    # Extract raw features from input
     features = extract_features(description)
-    X = np.array([[features[role] for role in ROLE_COSTS.keys()]])
 
-    # Predict the required number of each resource
+    # Prepare input for model
+    X = np.array([[features[role] for role in ROLE_COSTS.keys()]])
     prediction = model.predict(X)[0]
+
+    # Force prediction = 0 for roles with zero feature score
     resource_counts = {
-        role: int(round(pred)) for role, pred in zip(ROLE_COSTS.keys(), prediction)
+        role: int(round(pred)) if features[role] > 0 else 0
+        for role, pred in zip(ROLE_COSTS.keys(), prediction)
     }
 
-    # Estimate confidence range (10th to 90th percentile) using tree predictions
+    # Confidence intervals (10–90th percentile from decision trees)
     intervals = {}
     for i, role in enumerate(ROLE_COSTS.keys()):
         role_model = model.estimators_[i]
-        tree_preds = [
-            tree.predict(X)[0]
-            for tree in role_model.estimators_
-        ]
-        lb = int(np.floor(np.percentile(tree_preds, 10)))
-        ub = int(np.ceil(np.percentile(tree_preds, 90)))
+        tree_preds = [tree.predict(X)[0] for tree in role_model.estimators_]
+        lb = int(np.floor(np.percentile(tree_preds, 10))) if features[role] > 0 else 0
+        ub = int(np.ceil(np.percentile(tree_preds, 90))) if features[role] > 0 else 0
         intervals[role] = (lb, ub)
 
-    # Calculate total estimated cost
+    # Calculate estimated cost
     total_cost = estimate_cost(resource_counts)
 
     return resource_counts, intervals, total_cost
