@@ -21,7 +21,7 @@ if st.button("🚀 Predict Resources"):
         st.warning("Please enter a valid project description.")
     else:
         with st.spinner("Predicting..."):
-            resource_counts, intervals, total_cost = predict_resources(description)
+            resource_counts, intervals, total_cost, r2 = predict_resources(description)
 
         st.subheader("📊 Predicted Resources (with Confidence Ranges)")
         for role, count in resource_counts.items():
@@ -33,4 +33,4 @@ if st.button("🚀 Predict Resources"):
         st.success(f"${total_cost:,.2f}")
 
         st.subheader("📈 Model Accuracy")
-        st.info("Trained model R² Score: 0.98 (pseudo accuracy)")
+        st.info(f"Trained model R² Score (pseudo accuracy): {r2:.2f}")
