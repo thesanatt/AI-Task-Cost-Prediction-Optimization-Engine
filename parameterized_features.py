@@ -1,7 +1,18 @@
 def extract_features(description: str) -> dict:
+    """
+    Convert a project description into numerical role-based feature scores
+    based on keyword matches.
+
+    Parameters:
+        description (str): Natural language project description.
+
+    Returns:
+        dict: Role-based feature scores (e.g., {'devs': 2, 'designers': 1, ...})
+    """
     desc = description.lower()
     roles = ["devs", "designers", "ai_agents", "legal_devs", "ai_specialists"]
 
+    # Keyword-to-role weight mapping
     keyword_scores = {
         "mobile": {"devs": 2, "designers": 1},
         "bank": {"devs": 2, "legal_devs": 1, "ai_specialists": 1},
@@ -31,18 +42,16 @@ def extract_features(description: str) -> dict:
         "nlp": {"ai_specialists": 1, "ai_agents": 2}
     }
 
+    # Initialize score dictionary
     score = {role: 0 for role in roles}
 
+    # Tally up keyword matches
     for keyword, weights in keyword_scores.items():
         if keyword in desc:
             for role, w in weights.items():
                 score[role] += w
 
-    # Set a max cap per role (avoid over-inflation)
-    for role in score:
-        score[role] = min(score[role], 2)
-
-    # Ensure at least 1 dev if any other resource is present
+    # Ensure at least one developer if any resources are predicted
     if sum(score.values()) > 0 and score["devs"] == 0:
         score["devs"] = 1
 
