@@ -3,7 +3,7 @@ AI Task Cost Prediction & Optimization Engine
 
 Overview
 --------
-This project predicts the number of team members (developers, designers, AI agents, etc.) and the cost required to build an AI-related software project, based on a project description.
+This project predicts the types and counts of human/AI resources required to complete a software project, based on a natural-language task description. It also estimates the total cost using role-wise rates and a 4-week project duration.
 
 Hosted on: https://ai-task-cost-prediction-engine.streamlit.app/
 
@@ -32,6 +32,15 @@ Key Concepts Used
 - Feature extraction using keyword scores
 - Cost modeling via custom rates
 - Streamlit dashboard
+
+## Cost Assumptions
+
+- Developers: $2000/week  
+- Designers: $1500/week  
+- AI Agents: $2500/week  
+- Legal Devs: $2200/week  
+- AI Specialists: $3000/week  
+- **Project Duration**: 4 weeks (constant)
 
 Built With
 ----------
