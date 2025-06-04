@@ -3,7 +3,7 @@ from predictor import predict_resources
 
 st.set_page_config(page_title="AI Task Cost Estimator", layout="centered")
 
-st.title("🔧 AI Task Cost Prediction Engine")
+st.title("🔧 AI Task Cost Prediction & Optimization Engine")
 st.markdown("Enter a project description to estimate required resources and cost.")
 
 description = st.text_area("📝 Project Description", height=150)
