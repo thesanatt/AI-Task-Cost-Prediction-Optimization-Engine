@@ -2,13 +2,12 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_absolute_error, r2_score
 import joblib
 from parameterized_features import extract_features
 
 roles = ["devs", "designers", "ai_agents", "legal_devs", "ai_specialists"]
 
-# Training data descriptions
 descriptions = [
     "mobile ecommerce app with ai chatbot and login",
     "real-time analytics dashboard with api integration",
@@ -28,7 +27,6 @@ descriptions = [
     "documentation generator with analytics"
 ]
 
-# Expand training data artificially
 expanded_training_data = []
 for desc in descriptions * 10:
     features = extract_features(desc)
@@ -37,22 +35,19 @@ for desc in descriptions * 10:
         **features
     })
 
-# DataFrames
 df = pd.DataFrame(expanded_training_data)
 X_df = df[roles]
 y_df = df[roles]
 
-# Train/test split
 X_train, X_test, y_train, y_test = train_test_split(X_df, y_df, test_size=0.2, random_state=42)
 
-# Model training
 model = MultiOutputRegressor(RandomForestRegressor(n_estimators=100, random_state=42))
 model.fit(X_train, y_train)
 
-# Evaluation
 predictions = model.predict(X_test)
 mae = mean_absolute_error(y_test, predictions)
+r2 = r2_score(y_test, predictions)
 print(f"Mean Absolute Error: {mae:.5f}")
+print(f"R² Score (pseudo accuracy): {r2:.2f}")
 
-# Save model
 joblib.dump(model, "resource_predictor.pkl")
