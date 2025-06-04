@@ -5,6 +5,8 @@ Overview
 --------
 This project predicts the number of team members (developers, designers, AI agents, etc.) and the cost required to build an AI-related software project, based on a project description.
 
+Hosted on: https://ai-task-cost-prediction-engine.streamlit.app/
+
 It uses:
 - A machine learning model (Random Forest) trained with keyword-based features
 - Cost estimation using configurable role-wise costs and project duration
