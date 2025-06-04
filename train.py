@@ -13,10 +13,6 @@ training_data = [
         "devs": 3, "designers": 1, "ai_agents": 3, "legal_devs": 1, "ai_specialists": 1
     },
     {
-        "description": "Create a landing page for a small business.",
-        "devs": 1, "designers": 1, "ai_agents": 0, "legal_devs": 0, "ai_specialists": 0
-    },
-    {
         "description": "Develop an AI-based legal document review tool for a finance firm.",
         "devs": 2, "designers": 1, "ai_agents": 2, "legal_devs": 1, "ai_specialists": 1
     },
@@ -105,7 +101,10 @@ X_train, X_test, y_train, y_test = train_test_split(X_df, y_df, test_size=0.2, r
 model = MultiOutputRegressor(RandomForestRegressor(random_state=42))
 model.fit(X_train, y_train)
 
+# Optional evaluation (not shown on UI)
 predictions = model.predict(X_test)
 mae = mean_absolute_error(y_test, predictions)
 print(f"Mean Absolute Error: {mae:.2f}")
+
+# Save model (no R² included)
 joblib.dump(model, "resource_predictor.pkl")
