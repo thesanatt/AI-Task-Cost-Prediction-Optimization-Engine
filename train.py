@@ -105,10 +105,7 @@ X_train, X_test, y_train, y_test = train_test_split(X_df, y_df, test_size=0.2, r
 model = MultiOutputRegressor(RandomForestRegressor(random_state=42))
 model.fit(X_train, y_train)
 
-# Optional evaluation (not shown on UI)
 predictions = model.predict(X_test)
 mae = mean_absolute_error(y_test, predictions)
 print(f"Mean Absolute Error: {mae:.2f}")
-
-# Save model (no R² included)
 joblib.dump(model, "resource_predictor.pkl")
